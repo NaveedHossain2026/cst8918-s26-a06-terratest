@@ -1,10 +1,10 @@
-# 4.2 Resource Group
+# Define the resource group
 resource "azurerm_resource_group" "rg" {
   name     = "${var.labelPrefix}-A05-RG"
   location = var.region
 }
 
-# 4.3 Public IP Address (Updated to Standard SKU to resolve quota limits)
+# Define a public IP address
 resource "azurerm_public_ip" "public_ip" {
   name                = "${var.labelPrefix}-public-ip"
   location            = azurerm_resource_group.rg.location
@@ -13,7 +13,7 @@ resource "azurerm_public_ip" "public_ip" {
   sku                 = "Standard" # Changes it from Basic to Standard
 }
 
-# 4.4 Virtual Network
+# Define the virtual network
 resource "azurerm_virtual_network" "vnet" {
   name                = "${var.labelPrefix}-vnet"
   address_space       = ["10.0.0.0/16"]
@@ -21,7 +21,7 @@ resource "azurerm_virtual_network" "vnet" {
   resource_group_name = azurerm_resource_group.rg.name
 }
 
-# 4.5 Subnet
+# Define the subnet
 resource "azurerm_subnet" "subnet" {
   name                 = "${var.labelPrefix}-subnet"
   resource_group_name  = azurerm_resource_group.rg.name
@@ -29,7 +29,7 @@ resource "azurerm_subnet" "subnet" {
   address_prefixes     = ["10.0.1.0/24"]
 }
 
-# 4.6 Network Security Group (Inline SSH and HTTP Rules)
+# Define network security group and rules
 resource "azurerm_network_security_group" "nsg" {
   name                = "${var.labelPrefix}-nsg"
   location            = azurerm_resource_group.rg.location
@@ -60,7 +60,7 @@ resource "azurerm_network_security_group" "nsg" {
   }
 }
 
-# 4.7 Virtual Network Interface Card (NIC)
+# Define the network interface
 resource "azurerm_network_interface" "nic" {
   name                = "${var.labelPrefix}-nic"
   location            = azurerm_resource_group.rg.location
@@ -74,13 +74,14 @@ resource "azurerm_network_interface" "nic" {
   }
 }
 
-# 4.8 Apply Security Group to the NIC directly
+# Link the security group to the NIC
 resource "azurerm_network_interface_security_group_association" "nic_nsg" {
   network_interface_id      = azurerm_network_interface.nic.id
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
-# 4.9 Cloud-Init Script Data Source
+
+# Define the init script template
 data "cloudinit_config" "config" {
   gzip          = false
   base64_encode = true
@@ -91,7 +92,7 @@ data "cloudinit_config" "config" {
   }
 }
 
-# 4.10 Linux Virtual Machine
+# Define the virtual machine
 resource "azurerm_linux_virtual_machine" "vm" {
   name                = "${var.labelPrefix}-webserver"
   resource_group_name = azurerm_resource_group.rg.name
