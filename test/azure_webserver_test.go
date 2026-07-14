@@ -27,7 +27,7 @@ func TestAzureLinuxVMCreation(t *testing.T) {
     // Run `terraform init` and `terraform apply`. Fail the test if there are any errors.
     terraform.InitAndApply(t, terraformOptions)
 
-   
+   // Run `terraform output` to get the value of output variable
     vmName := "hoss0113-webserver" 
     resourceGroupName := terraform.Output(t, terraformOptions, "resource_group_name")
 
