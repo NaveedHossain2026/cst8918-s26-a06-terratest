@@ -8,7 +8,8 @@ import (
     "github.com/stretchr/testify/assert"
 )
 
-
+// You normally want to run this under a separate "Testing" subscription
+// For lab purposes you will use your assigned subscription under the Cloud Dev/Ops program tenant
 var subscriptionID string = "e415d340-1457-4f20-9088-b1fca5e591f1"
 
 func TestAzureLinuxVMCreation(t *testing.T) {
